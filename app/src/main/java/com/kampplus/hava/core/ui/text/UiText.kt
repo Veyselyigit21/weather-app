@@ -1,5 +1,6 @@
 package com.kampplus.hava.core.ui.text
 
+import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -23,5 +24,11 @@ sealed interface UiText {
     fun asString(): String = when (this) {
         is Dynamic -> value
         is Resource -> stringResource(resId, *args)
+    }
+
+    /** Compose dışında (ör. paylaşım Intent'i) metni çözmek için. */
+    fun asString(resources: Resources): String = when (this) {
+        is Dynamic -> value
+        is Resource -> resources.getString(resId, *args)
     }
 }
