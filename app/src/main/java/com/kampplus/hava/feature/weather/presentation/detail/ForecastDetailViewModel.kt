@@ -21,6 +21,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -49,6 +50,9 @@ class ForecastDetailViewModel @Inject constructor(
     /** null = henüz yükleniyor. */
     private val result = MutableStateFlow<AppResult<Forecast>?>(null)
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     val uiState: StateFlow<UiState<ForecastUiModel>> = combine(result, observeFavoriteCityIds()) { result, favoriteIds ->
         when (result) {
             null -> UiState.Loading
@@ -66,6 +70,15 @@ class ForecastDetailViewModel @Inject constructor(
     }
 
     fun onRetry() = load()
+
+    /** Mevcut tahmin ekranda kalır; yeni veri gelince yerine geçer. */
+    fun onRefresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            result.value = getForecast(city)
+            _isRefreshing.value = false
+        }
+    }
 
     fun onToggleFavorite() {
         viewModelScope.launch { toggleFavoriteCity(city.toFavorite()) }

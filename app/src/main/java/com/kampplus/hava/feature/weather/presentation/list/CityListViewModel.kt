@@ -47,8 +47,11 @@ class CityListViewModel @Inject constructor(
 
     private val query = MutableStateFlow("")
 
-    /** Her artışta liste yeniden yüklenir (tekrar dene). */
+    /** Her artışta liste yeniden yüklenir (tekrar dene / yenile). */
     private val reloadTrigger = MutableStateFlow(0)
+
+    /** Yenilemede mevcut liste ekranda kalır, Loading'e düşülmez. */
+    private val isRefreshing = MutableStateFlow(false)
 
     /**
      * Yazarken her tuşa istek atılmaz: arama [SEARCH_DEBOUNCE_MS] kadar bekletilir.
@@ -66,12 +69,18 @@ class CityListViewModel @Inject constructor(
             source
                 .onEach { result ->
                     if (result is AppResult.Success) loadedCities = result.data.associate { it.city.id to it.city }
+                    isRefreshing.value = false
                 }
                 .map<AppResult<List<CityWeather>>, AppResult<List<CityWeather>>?> { it }
-                .onStart { emit(null) }
+                .onStart { if (!isRefreshing.value) emit(null) }
         }
 
-    val uiState: StateFlow<CityListUiState> = combine(query, results, observeFavoriteCityIds()) { query, result, favoriteIds ->
+    val uiState: StateFlow<CityListUiState> = combine(
+        query,
+        results,
+        observeFavoriteCityIds(),
+        isRefreshing
+    ) { query, result, favoriteIds, refreshing ->
         CityListUiState(
             query = query,
             content = when (result) {
@@ -83,7 +92,8 @@ class CityListViewModel @Inject constructor(
                         UiState.Success(result.data.map { uiMapper.toListItem(it, isFavorite = it.city.id in favoriteIds) })
                     }
                 is AppResult.Failure -> UiState.Error(result.error.toUiText())
-            }
+            },
+            isRefreshing = refreshing
         )
     }.stateIn(
         scope = viewModelScope,
@@ -98,6 +108,11 @@ class CityListViewModel @Inject constructor(
     }
 
     fun onRetry() {
+        reloadTrigger.update { it + 1 }
+    }
+
+    fun onRefresh() {
+        isRefreshing.value = true
         reloadTrigger.update { it + 1 }
     }
 

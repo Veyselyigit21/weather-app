@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ fun CityListScreen(
     onCityClick: (Long) -> Unit,
     onFavoriteClick: (Long) -> Unit,
     onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -55,12 +57,18 @@ fun CityListScreen(
                 onQueryChange = onQueryChange,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
-            ListContent(
-                uiState = uiState,
-                onCityClick = onCityClick,
-                onFavoriteClick = onFavoriteClick,
-                onRetry = onRetry
-            )
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                ListContent(
+                    uiState = uiState,
+                    onCityClick = onCityClick,
+                    onFavoriteClick = onFavoriteClick,
+                    onRetry = onRetry
+                )
+            }
         }
     }
 }
@@ -136,7 +144,8 @@ private fun CityListScreenPreview() {
             onQueryChange = {},
             onCityClick = {},
             onFavoriteClick = {},
-            onRetry = {}
+            onRetry = {},
+            onRefresh = {}
         )
     }
 }

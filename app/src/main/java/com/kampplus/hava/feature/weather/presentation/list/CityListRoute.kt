@@ -17,6 +17,7 @@ fun CityListRoute(onCityClick: (City) -> Unit, modifier: Modifier = Modifier, vi
         onCityClick = { cityId -> viewModel.findCity(cityId)?.let(onCityClick) },
         onFavoriteClick = viewModel::onToggleFavorite,
         onRetry = viewModel::onRetry,
+        onRefresh = viewModel::onRefresh,
         modifier = modifier
     )
 }

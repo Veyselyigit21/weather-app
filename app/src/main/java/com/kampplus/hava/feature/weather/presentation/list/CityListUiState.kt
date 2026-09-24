@@ -5,7 +5,8 @@ import com.kampplus.hava.feature.weather.presentation.model.CityWeatherUiModel
 
 data class CityListUiState(
     val query: String = "",
-    val content: UiState<List<CityWeatherUiModel>> = UiState.Loading
+    val content: UiState<List<CityWeatherUiModel>> = UiState.Loading,
+    val isRefreshing: Boolean = false
 ) {
     /** Arama kutusu dolu mu? (Boş durum metni buna göre değişir.) */
     val isSearching: Boolean get() = query.trim().length >= CityListViewModel.MIN_QUERY_LENGTH
