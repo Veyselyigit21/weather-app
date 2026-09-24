@@ -4,7 +4,7 @@ import com.kampplus.hava.core.network.di.ForecastRetrofit
 import com.kampplus.hava.core.network.di.GeocodingRetrofit
 import com.kampplus.hava.feature.weather.data.local.CityCatalog
 import com.kampplus.hava.feature.weather.data.local.TurkishCityCatalog
-import com.kampplus.hava.feature.weather.data.remote.FakeWeatherRemoteDataSource
+import com.kampplus.hava.feature.weather.data.remote.OpenMeteoWeatherRemoteDataSource
 import com.kampplus.hava.feature.weather.data.remote.WeatherRemoteDataSource
 import com.kampplus.hava.feature.weather.data.remote.api.OpenMeteoForecastApi
 import com.kampplus.hava.feature.weather.data.remote.api.OpenMeteoGeocodingApi
@@ -29,7 +29,7 @@ abstract class WeatherDataModule {
     abstract fun bindWeatherRepository(impl: WeatherRepositoryImpl): WeatherRepository
 
     @Binds
-    abstract fun bindWeatherRemoteDataSource(impl: FakeWeatherRemoteDataSource): WeatherRemoteDataSource
+    abstract fun bindWeatherRemoteDataSource(impl: OpenMeteoWeatherRemoteDataSource): WeatherRemoteDataSource
 
     @Binds
     abstract fun bindCityCatalog(impl: TurkishCityCatalog): CityCatalog
