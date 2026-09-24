@@ -25,4 +25,6 @@
     <string name="detail_wind">Rüzgâr</string>
     <string name="action_share">Paylaş</string>
     <string name="share_text">%1$s şu an %2$s %3$s %4$s</string>
+    <string name="action_add_favorite">Favorilere ekle</string>
+    <string name="action_remove_favorite">Favorilerden çıkar</string>
 </resources>
