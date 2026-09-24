@@ -18,7 +18,7 @@ class WeatherUiMapper @Inject constructor(
     private val conditionClassifier: WeatherConditionClassifier,
     private val conditionUiRegistry: WeatherConditionUiRegistry
 ) {
-    fun toListItem(cityWeather: CityWeather): CityWeatherUiModel = with(cityWeather) {
+    fun toListItem(cityWeather: CityWeather, isFavorite: Boolean = false): CityWeatherUiModel = with(cityWeather) {
         val conditionUi = conditionUi(current.weatherCode)
         CityWeatherUiModel(
             cityId = city.id,
@@ -27,11 +27,12 @@ class WeatherUiMapper @Inject constructor(
             temperatureText = degrees(current.temperatureC),
             temperatureC = current.temperatureC,
             conditionEmoji = conditionUi.emoji,
-            conditionLabel = conditionUi.label
+            conditionLabel = conditionUi.label,
+            isFavorite = isFavorite
         )
     }
 
-    fun toForecast(city: City, forecast: Forecast): ForecastUiModel = with(forecast) {
+    fun toForecast(city: City, forecast: Forecast, isFavorite: Boolean = false): ForecastUiModel = with(forecast) {
         val conditionUi = conditionUi(current.weatherCode)
         val currentHour = current.observedAt.truncatedTo(ChronoUnit.HOURS)
         ForecastUiModel(
@@ -65,7 +66,8 @@ class WeatherUiMapper @Inject constructor(
                     maxText = degrees(day.maxTemperatureC),
                     precipitationText = percent(day.precipitationProbability)
                 )
-            }
+            },
+            isFavorite = isFavorite
         )
     }
 
