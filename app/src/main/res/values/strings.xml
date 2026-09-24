@@ -30,4 +30,6 @@
     <string name="nav_list">Şehirler</string>
     <string name="nav_favorites">Favoriler</string>
     <string name="favorites_title">Favori Şehirlerim</string>
+    <string name="favorites_empty_title">Henüz favori şehrin yok</string>
+    <string name="favorites_empty_message">Listede ya da tahmin ekranında kalp ikonuna dokunarak şehirleri buraya ekleyebilirsin.</string>
 </resources>
