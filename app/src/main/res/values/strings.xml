@@ -40,4 +40,7 @@
     <string name="error_server">Sunucu şu anda yanıt veremiyor (HTTP %1$d).</string>
     <string name="list_empty_title">Şehir bulunamadı</string>
     <string name="list_empty_message">Gösterilecek şehir yok.</string>
+    <string name="search_hint">Şehir ara (ör. Berlin, Rize)</string>
+    <string name="action_clear">Temizle</string>
+    <string name="search_empty_message">“%1$s” için şehir bulunamadı.</string>
 </resources>

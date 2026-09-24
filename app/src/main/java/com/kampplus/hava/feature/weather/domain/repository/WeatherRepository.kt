@@ -14,5 +14,8 @@ interface WeatherRepository {
     /** Öne çıkan şehirlerin anlık hava durumu. */
     fun getCityWeathers(): Flow<AppResult<List<CityWeather>>>
 
+    /** Verilen şehirlerin anlık hava durumu (ör. arama sonuçları). */
+    fun getCurrentWeather(cities: List<City>): Flow<AppResult<List<CityWeather>>>
+
     suspend fun getForecast(city: City): AppResult<Forecast>
 }
