@@ -9,11 +9,14 @@ import com.kampplus.hava.feature.favorites.data.repository.FavoriteCityRepositor
 import com.kampplus.hava.feature.favorites.domain.usecase.ObserveFavoriteCityIdsUseCase
 import com.kampplus.hava.feature.favorites.domain.usecase.ToggleFavoriteCityUseCase
 import com.kampplus.hava.feature.weather.domain.usecase.GetCityWeathersUseCase
+import com.kampplus.hava.feature.weather.domain.usecase.SearchCityWeathersUseCase
+import com.kampplus.hava.testing.FakeCityRepository
 import com.kampplus.hava.testing.FakeWeatherRepository
 import com.kampplus.hava.testing.MainDispatcherRule
 import com.kampplus.hava.testing.city
 import com.kampplus.hava.testing.cityWeather
 import com.kampplus.hava.testing.testUiMapper
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -26,10 +29,12 @@ class CityListViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = FakeWeatherRepository()
+    private val cityRepository = FakeCityRepository()
     private val favoritesRepository = FavoriteCityRepositoryImpl(InMemoryFavoriteCityDataSource())
 
     private fun createViewModel() = CityListViewModel(
         getCityWeathers = GetCityWeathersUseCase(repository),
+        searchCityWeathers = SearchCityWeathersUseCase(cityRepository, repository),
         observeFavoriteCityIds = ObserveFavoriteCityIdsUseCase(favoritesRepository),
         toggleFavoriteCity = ToggleFavoriteCityUseCase(favoritesRepository),
         uiMapper = testUiMapper()
@@ -41,7 +46,7 @@ class CityListViewModelTest {
             AppResult.Success(listOf(cityWeather(city = city(name = "İzmir", region = "İzmir"), temperatureC = 26.6)))
         }
 
-        createViewModel().uiState.test {
+        createViewModel().uiState.map { it.content }.test {
             assertEquals(UiState.Loading, awaitItem())
             val item = (awaitItem() as UiState.Success).data.single()
             assertEquals("İzmir", item.title)
@@ -54,7 +59,7 @@ class CityListViewModelTest {
     fun `emits empty when there is no city`() = runTest {
         repository.cityWeathersResult = { AppResult.Success(emptyList()) }
 
-        createViewModel().uiState.test {
+        createViewModel().uiState.map { it.content }.test {
             assertEquals(UiState.Loading, awaitItem())
             assertEquals(UiState.Empty, awaitItem())
         }
@@ -64,7 +69,7 @@ class CityListViewModelTest {
     fun `emits error when repository fails`() = runTest {
         repository.cityWeathersResult = { AppResult.Failure(AppError.Network) }
 
-        createViewModel().uiState.test {
+        createViewModel().uiState.map { it.content }.test {
             assertEquals(UiState.Loading, awaitItem())
             assertTrue(awaitItem() is UiState.Error)
         }
