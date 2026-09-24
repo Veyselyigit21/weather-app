@@ -41,4 +41,10 @@ Bir bloğu yetiştiremediyseniz kodunuzu `katilimci/<ad>/cpN` branch'ine kaydedi
 
 Git Flow (`main` ← `release/*` ← `develop` ← `feature/*`), feature → develop `--no-ff` merge, Conventional Commits (`feat(list): add city search`). Geçmiş: `git log --graph --oneline --all`
 
-Ayrıntılar: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Ayrıntılar: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/GIT-HISTORY.md](docs/GIT-HISTORY.md)
+
+## Kurumsal ağ uyarısı (TLS denetimi)
+
+Kurumsal güvenlik duvarı `open-meteo.com` trafiğini kendi iç sertifikasıyla yeniden imzalıyorsa (TLS inspection) cihaz/emülatör bu sertifikaya güvenmez ve uygulama **"İnternet bağlantısı yok"** hatası gösterir (logcat: `SSLHandshakeException: Trust anchor for certification path not found`). Kontrol: `echo | openssl s_client -connect api.open-meteo.com:443 2>/dev/null | openssl x509 -noout -issuer`. Kamp öncesi cihazların kurumsal olmayan bir ağda (misafir Wi-Fi / hotspot) test edilmesi önerilir.
+
+**Release imzası:** `keystore.properties.example` dosyasını `keystore.properties` olarak kopyalayıp doldurun (repoya girmez). Dosya yoksa release APK debug anahtarıyla imzalanır.
