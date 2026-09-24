@@ -34,6 +34,7 @@ import com.kampplus.hava.core.ui.text.UiText
 import com.kampplus.hava.core.ui.theme.HavaTheme
 import com.kampplus.hava.feature.weather.presentation.detail.component.DailyForecastItem
 import com.kampplus.hava.feature.weather.presentation.detail.component.HourlyForecastRow
+import com.kampplus.hava.feature.weather.presentation.detail.component.ShareButton
 import com.kampplus.hava.feature.weather.presentation.model.DailyUiModel
 import com.kampplus.hava.feature.weather.presentation.model.ForecastUiModel
 import com.kampplus.hava.feature.weather.presentation.model.HourlyUiModel
@@ -41,7 +42,12 @@ import com.kampplus.hava.feature.weather.presentation.model.temperatureColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForecastDetailScreen(uiState: UiState<ForecastUiModel>, onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun ForecastDetailScreen(
+    uiState: UiState<ForecastUiModel>,
+    onBack: () -> Unit,
+    onShare: (ForecastUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -50,6 +56,11 @@ fun ForecastDetailScreen(uiState: UiState<ForecastUiModel>, onBack: () -> Unit, 
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                },
+                actions = {
+                    if (uiState is UiState.Success) {
+                        ShareButton(onClick = { onShare(uiState.data) })
                     }
                 }
             )
@@ -159,7 +170,8 @@ private fun ForecastDetailScreenPreview() {
                     daily = List(7) { DailyUiModel(UiText.Dynamic("Cuma"), "⛅", "14°", "24°", "%10") }
                 )
             ),
-            onBack = {}
+            onBack = {},
+            onShare = {}
         )
     }
 }
