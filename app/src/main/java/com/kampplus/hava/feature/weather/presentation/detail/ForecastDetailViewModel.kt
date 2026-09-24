@@ -3,11 +3,10 @@ package com.kampplus.hava.feature.weather.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kampplus.hava.R
 import com.kampplus.hava.core.common.result.AppResult
 import com.kampplus.hava.core.navigation.ForecastDestination
 import com.kampplus.hava.core.ui.state.UiState
-import com.kampplus.hava.core.ui.text.UiText
+import com.kampplus.hava.core.ui.text.toUiText
 import com.kampplus.hava.feature.favorites.domain.usecase.ObserveFavoriteCityIdsUseCase
 import com.kampplus.hava.feature.favorites.domain.usecase.ToggleFavoriteCityUseCase
 import com.kampplus.hava.feature.weather.domain.model.City
@@ -54,7 +53,7 @@ class ForecastDetailViewModel @Inject constructor(
         when (result) {
             null -> UiState.Loading
             is AppResult.Success -> UiState.Success(uiMapper.toForecast(city, result.data, isFavorite = city.id in favoriteIds))
-            is AppResult.Failure -> UiState.Error(UiText.Resource(R.string.error_generic))
+            is AppResult.Failure -> UiState.Error(result.error.toUiText())
         }
     }.stateIn(
         scope = viewModelScope,
@@ -65,6 +64,8 @@ class ForecastDetailViewModel @Inject constructor(
     init {
         load()
     }
+
+    fun onRetry() = load()
 
     fun onToggleFavorite() {
         viewModelScope.launch { toggleFavoriteCity(city.toFavorite()) }
