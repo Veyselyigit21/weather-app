@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.kampplus.hava.R
 import com.kampplus.hava.core.ui.component.EmptyView
 import com.kampplus.hava.core.ui.component.ErrorView
-import com.kampplus.hava.core.ui.component.LoadingView
+import com.kampplus.hava.core.ui.component.ShimmerList
 import com.kampplus.hava.core.ui.state.UiState
 import com.kampplus.hava.core.ui.text.UiText
 import com.kampplus.hava.core.ui.theme.HavaTheme
@@ -49,7 +49,7 @@ fun CityListScreen(
             contentAlignment = Alignment.Center
         ) {
             when (uiState) {
-                UiState.Loading -> LoadingView()
+                UiState.Loading -> ShimmerList()
                 UiState.Empty -> EmptyView(
                     icon = Icons.Filled.Search,
                     title = stringResource(R.string.list_empty_title),
