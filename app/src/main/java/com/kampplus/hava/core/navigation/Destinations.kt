@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object ListDestination
 
+@Serializable
+data object FavoritesDestination
+
 /**
  * Tahmin ekranı. Şehrin koordinatları argüman olarak taşınır; böylece detay ekranı
  * ek bir "şehir getir" isteğine ihtiyaç duymaz.
